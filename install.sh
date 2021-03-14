@@ -133,7 +133,7 @@ chrony_install() {
 
     judge "chronyd start"
 
-    timedatectl set-timezone Asia/Shanghai
+    timedatectl set-timezone Asia/Manila
 
     echo -e "${OK} ${GreenBG} Waiting time synchronization ${Font}"
     sleep 10
