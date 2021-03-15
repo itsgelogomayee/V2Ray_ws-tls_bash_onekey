@@ -63,7 +63,7 @@ old_config_status="off"
 random_num=$((RANDOM%12+4))
 #Generate camouflage path
 #camouflage="/$(head -n 10 /dev/urandom | md5sum | head -c ${random_num})/"
-camouflage="/octopusvpn/"
+camouflage="/revyvpn/"
 
 THREAD=$(grep 'processor' /proc/cpuinfo | sort -u | wc -l)
 
