@@ -63,7 +63,10 @@ old_config_status="off"
 random_num=$((RANDOM%12+4))
 #Generate camouflage path
 #camouflage="/$(head -n 10 /dev/urandom | md5sum | head -c ${random_num})/"
-camouflage="/revyvpn/"
+
+read -p "Enter desired config path: "  v2path
+
+camouflage="/$v2path/"
 
 THREAD=$(grep 'processor' /proc/cpuinfo | sort -u | wc -l)
 
@@ -141,18 +144,19 @@ chrony_install() {
     chronyc sourcestats -v
     chronyc tracking -v
     date
-    read -rp "Please confirm whether the time is accurate, the error range is ±3 minutes(Y/N): " chrony_install
-    [[ -z ${chrony_install} ]] && chrony_install="Y"
-    case $chrony_install in
-    [yY][eE][sS] | [yY])
-        echo -e "${GreenBG} Continue installation ${Font}"
-        sleep 2
-        ;;
-    *)
-        echo -e "${RedBG} Installation terminated ${Font}"
-        exit 2
-        ;;
-    esac
+    chrony_install="Y"
+    #read -rp "Please confirm whether the time is accurate, the error range is ±3 minutes(Y/N): " chrony_install
+    #[[ -z ${chrony_install} ]] && chrony_install="Y"
+    #case $chrony_install in
+    #[yY][eE][sS] | [yY])
+    #    echo -e "${GreenBG} Continue installation ${Font}"
+    #    sleep 2
+    #    ;;
+    #*)
+    #    echo -e "${RedBG} Installation terminated ${Font}"
+    #    exit 2
+    #    ;;
+    #esac
 }
 
 dependency_install() {
@@ -236,10 +240,12 @@ basic_optimization() {
 }
 port_alterid_set() {
     if [[ "on" != "$old_config_status" ]]; then
-        read -rp "Please enter the connection port（default:443）:" port
-        [[ -z ${port} ]] && port="443"
-        read -rp "Please enter alterID（default:2 Only numbers allowed）:" alterID
-        [[ -z ${alterID} ]] && alterID="2"
+    	port="443"
+	alterID="2"
+        #read -rp "Please enter the connection port（default:443）:" port
+        #[[ -z ${port} ]] && port="443"
+        #read -rp "Please enter alterID（default:2 Only numbers allowed）:" alterID
+        #[[ -z ${alterID} ]] && alterID="2"
     fi
 }
 modify_path() {
@@ -691,15 +697,17 @@ vmess_link_image_choice() {
         echo "Please select the generated link type"
         echo "1: V2RayNG/V2RayN"
         echo "2: quantumult"
-        read -rp "please enter：" link_version
-        [[ -z ${link_version} ]] && link_version=1
-        if [[ $link_version == 1 ]]; then
-            vmess_qr_link_image
-        elif [[ $link_version == 2 ]]; then
-            vmess_quan_link_image
-        else
-            vmess_qr_link_image
-        fi
+        link_version=1
+	
+	#read -rp "please enter：" link_version
+        #[[ -z ${link_version} ]] && link_version=1
+        #if [[ $link_version == 1 ]]; then
+        #    vmess_qr_link_image
+        #elif [[ $link_version == 2 ]]; then
+        #    vmess_quan_link_image
+        #else
+        #    vmess_qr_link_image
+        #fi
 }
 info_extraction() {
     grep "$1" $v2ray_qr_config_file | awk -F '"' '{print $4}'
@@ -774,25 +782,32 @@ EOF
 
 tls_type() {
     if [[ -f "/etc/nginx/sbin/nginx" ]] && [[ -f "$nginx_conf" ]] && [[ "$shell_mode" == "ws" ]]; then
-        echo "Please select a supported TLS version（default:3）:"
-        echo "Please note that if you are using Quantaumlt X / router / old Shadowrocket / V2ray core lower than 4.18.1, please select compatibility mode"
-        echo "1: TLS1.1 TLS1.2 and TLS1.3（Compatibility mode）"
-        echo "2: TLS1.2 and TLS1.3 (Compatibility mode)"
-        echo "3: TLS1.3 only"
-        read -rp "please enter：" tls_version
-        [[ -z ${tls_version} ]] && tls_version=3
-        if [[ $tls_version == 3 ]]; then
-            sed -i 's/ssl_protocols.*/ssl_protocols         TLSv1.3;/' $nginx_conf
-            echo -e "${OK} ${GreenBG} Switched to TLS1.3 only ${Font}"
-        elif [[ $tls_version == 1 ]]; then
-            sed -i 's/ssl_protocols.*/ssl_protocols         TLSv1.1 TLSv1.2 TLSv1.3;/' $nginx_conf
-            echo -e "${OK} ${GreenBG} Switched to TLS1.1 TLS1.2 and TLS1.3 ${Font}"
-        else
-            sed -i 's/ssl_protocols.*/ssl_protocols         TLSv1.2 TLSv1.3;/' $nginx_conf
-            echo -e "${OK} ${GreenBG} Switched to TLS1.2 and TLS1.3 ${Font}"
-        fi
-        systemctl restart nginx
+        #echo "Please select a supported TLS version（default:3）:"
+        #echo "Please note that if you are using Quantaumlt X / router / old Shadowrocket / V2ray core lower than 4.18.1, please select compatibility mode"
+        #echo "1: TLS1.1 TLS1.2 and TLS1.3（Compatibility mode）"
+        #echo "2: TLS1.2 and TLS1.3 (Compatibility mode)"
+        #echo "3: TLS1.3 only"
+        
+	tls_version=1
+	sed -i 's/ssl_protocols.*/ssl_protocols         TLSv1.1 TLSv1.2 TLSv1.3;/' $nginx_conf
+        echo -e "${OK} ${GreenBG} Switched to TLS1.1 TLS1.2 and TLS1.3 ${Font}"
+	systemctl restart nginx
         judge "Nginx restart"
+	    
+	#read -rp "please enter：" tls_version
+        #[[ -z ${tls_version} ]] && tls_version=3
+        #if [[ $tls_version == 3 ]]; then
+        #    sed -i 's/ssl_protocols.*/ssl_protocols         TLSv1.3;/' $nginx_conf
+        #    echo -e "${OK} ${GreenBG} Switched to TLS1.3 only ${Font}"
+        #elif [[ $tls_version == 1 ]]; then
+        #    sed -i 's/ssl_protocols.*/ssl_protocols         TLSv1.1 TLSv1.2 TLSv1.3;/' $nginx_conf
+        #    echo -e "${OK} ${GreenBG} Switched to TLS1.1 TLS1.2 and TLS1.3 ${Font}"
+        #else
+        #    sed -i 's/ssl_protocols.*/ssl_protocols         TLSv1.2 TLSv1.3;/' $nginx_conf
+        #    echo -e "${OK} ${GreenBG} Switched to TLS1.2 and TLS1.3 ${Font}"
+        #fi
+	
+        
     else
         echo -e "${Error} ${RedBG} Nginx Or the configuration file does not exist or the currently installed version is h2 ，Please install the script correctly and execute it${Font}"
     fi
@@ -979,6 +994,7 @@ menu() {
     echo -e "${Green}16.${Font} Empty certificate legacy files"
     echo -e "${Green}17.${Font} Exit \n"
 
+    
     read -rp "Please enter the number：" menu_num
     case $menu_num in
     0)
