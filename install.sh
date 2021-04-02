@@ -65,7 +65,7 @@ random_num=$((RANDOM%12+4))
 #camouflage="/$(head -n 10 /dev/urandom | md5sum | head -c ${random_num})/"
 
 read -p "Enter desired config path: "  v2path
-
+read -rp "Please enter your domain information (eg:www.google.com):" domain
 camouflage="/$v2path/"
 
 THREAD=$(grep 'processor' /proc/cpuinfo | sort -u | wc -l)
@@ -430,7 +430,7 @@ ssl_install() {
     judge "Install the SSL certificate generation script"
 }
 domain_check() {
-    read -rp "Please enter your domain information (eg:www.wulabing.com):" domain
+    
     domain_ip=$(ping "${domain}" -c 1 | sed '1{s/[^(]*(//;s/).*//;q}')
     echo -e "${OK} ${GreenBG} Obtaining public network ip information, please be patient ${Font}"
     local_ip=$(curl https://api-ipv4.ip.sb/ip)
@@ -442,17 +442,18 @@ domain_check() {
         sleep 2
     else
         echo -e "${Error} ${RedBG} Please make sure that the correct A record is added to the domain name, otherwise V2ray cannot be used normally ${Font}"
-        echo -e "${Error} ${RedBG} The DNS resolution IP of the domain name does not match the local IP. Do you want to continue the installation? （y/n）${Font}" && read -r install
-        case $install in
-        [yY][eE][sS] | [yY])
-            echo -e "${GreenBG} Continue installation ${Font}"
-            sleep 2
-            ;;
-        *)
-            echo -e "${RedBG} Installation terminated ${Font}"
-            exit 2
-            ;;
-        esac
+	sleep 2
+        #echo -e "${Error} ${RedBG} The DNS resolution IP of the domain name does not match the local IP. Do you want to continue the installation? （y/n）${Font}" && read -r install
+        #case $install in
+        #[yY][eE][sS] | [yY])
+        #    echo -e "${GreenBG} Continue installation ${Font}"
+        #    sleep 2
+        #    ;;
+       	#*)
+        #    echo -e "${RedBG} Installation terminated ${Font}"
+        #    exit 2
+        #    ;;
+        # esac
     fi
 }
 
@@ -891,10 +892,11 @@ install_v2ray_ws_tls() {
     basic_information
     vmess_link_image_choice
     tls_type
-    show_information
     start_process_systemd
     enable_process_systemd
     acme_cron_update
+    show_information
+    
 }
 install_v2_h2() {
     is_root
