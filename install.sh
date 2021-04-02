@@ -15,6 +15,11 @@ cd "$(
 #	Official document: www.v2ray.com
 #====================================================
 
+#update vps
+apt-get update
+apt-get upgrade -y
+
+
 #fonts color
 Green="\033[32m"
 Red="\033[31m"
@@ -65,7 +70,9 @@ random_num=$((RANDOM%12+4))
 #camouflage="/$(head -n 10 /dev/urandom | md5sum | head -c ${random_num})/"
 
 read -p "Enter desired config path: "  v2path
+clear
 read -rp "Please enter your domain information (eg:www.google.com):" domain
+clear
 camouflage="/$v2path/"
 
 THREAD=$(grep 'processor' /proc/cpuinfo | sort -u | wc -l)
