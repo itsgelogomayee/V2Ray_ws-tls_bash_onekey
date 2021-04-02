@@ -698,6 +698,7 @@ vmess_link_image_choice() {
         echo "1: V2RayNG/V2RayN"
         echo "2: quantumult"
         link_version=1
+	vmess_qr_link_image
 	
 	#read -rp "please enter：" link_version
         #[[ -z ${link_version} ]] && link_version=1
