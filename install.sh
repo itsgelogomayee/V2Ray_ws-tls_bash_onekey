@@ -64,6 +64,7 @@ random_num=$((RANDOM%12+4))
 #Generate camouflage path
 #camouflage="/$(head -n 10 /dev/urandom | md5sum | head -c ${random_num})/"
 
+clear
 read -p "Enter desired config path: "  v2path
 clear
 read -rp "Please enter your domain information (eg:www.google.com):" domain
