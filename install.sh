@@ -700,9 +700,9 @@ vmess_quan_link_image() {
 }
 
 vmess_link_image_choice() {
-        echo "Please select the generated link type"
-        echo "1: V2RayNG/V2RayN"
-        echo "2: quantumult"
+        #echo "Please select the generated link type"
+        #echo "1: V2RayNG/V2RayN"
+        #echo "2: quantumult"
         link_version=1
 	vmess_qr_link_image
 	
@@ -738,6 +738,24 @@ show_information() {
     clear
     cat "${v2ray_info_file}"
 }
+
+add_v2rayclient() {
+cat <<'MyV2RayClientAdd' > /usr/bin/v2rayclientadd
+#!/bin/bash
+while getopts u:a: flag
+do
+    case "${flag}" in
+        u) uuid=${OPTARG};;
+        a) alterid=${OPTARG};;
+    esac
+done
+sed -i '14 a \          {\n            "id": "'"${uuid}"'",\n            "alterId": '"${alterid}"'\n          },' config.json
+systemctl restart v2ray
+MyV2RayClientAdd
+
+chmod +x /usr/bin/v2rayclientadd
+}
+
 ssl_judge_and_install() {
     if [[ -f "/data/v2ray.key" || -f "/data/v2ray.crt" ]]; then
         echo "/data The certificate file in the directory already exists"
@@ -901,6 +919,7 @@ install_v2ray_ws_tls() {
     start_process_systemd
     enable_process_systemd
     acme_cron_update
+    add_v2rayclient
     show_information
     
 }
