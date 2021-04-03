@@ -15,11 +15,6 @@ cd "$(
 #	Official document: www.v2ray.com
 #====================================================
 
-#update vps
-apt-get update
-apt-get upgrade -y
-
-
 #fonts color
 Green="\033[32m"
 Red="\033[31m"
@@ -90,11 +85,13 @@ check_system() {
         echo -e "${OK} ${GreenBG} The current system is Debian ${VERSION_ID} ${VERSION} ${Font}"
         INS="apt"
         $INS update
+	apt-get upgrade -y
         ## Add Nginx apt source
     elif [[ "${ID}" == "ubuntu" && $(echo "${VERSION_ID}" | cut -d '.' -f1) -ge 16 ]]; then
         echo -e "${OK} ${GreenBG} The current system is Ubuntu ${VERSION_ID} ${UBUNTU_CODENAME} ${Font}"
         INS="apt"
         $INS update
+	apt-get upgrade -y
     else
         echo -e "${Error} ${RedBG} The current system is ${ID} ${VERSION_ID} Not in the list of supported systems, installation interrupted ${Font}"
         exit 1
