@@ -749,7 +749,7 @@ do
         a) alterid=${OPTARG};;
     esac
 done
-sed -i '14 a \          {\n            "id": "'"${uuid}"'",\n            "alterId": '"${alterid}"'\n          },' config.json
+sed -i '14 a \          {\n            "id": "'"${uuid}"'",\n            "alterId": '"${alterid}"'\n          },' /etc/v2ray/config.json
 systemctl restart v2ray
 MyV2RayClientAdd
 
