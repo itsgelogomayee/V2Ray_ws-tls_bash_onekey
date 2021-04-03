@@ -734,6 +734,7 @@ basic_information() {
     } >"${v2ray_info_file}"
 }
 show_information() {
+    clear
     cat "${v2ray_info_file}"
 }
 ssl_judge_and_install() {
