@@ -29,7 +29,7 @@ OK="${Green}[OK]${Font}"
 Error="${Red}[ERROR]${Font}"
 
 # VERSION
-shell_version="1.1.5.7"
+shell_version="1.1.6.2"
 shell_mode="None"
 github_branch="master"
 version_cmp="/tmp/version_cmp.tmp"
@@ -68,6 +68,8 @@ clear
 read -p "Enter desired config path: "  v2path
 clear
 read -rp "Please enter your domain information (eg:www.google.com):" domain
+clear
+read -rp "Please enter the email address used to register the domain name:" domain_email
 clear
 camouflage="/$v2path/"
 
@@ -431,7 +433,7 @@ ssl_install() {
     fi
     judge "Install SSL certificate generation script dependency"
 
-    curl https://get.acme.sh | sh
+    curl https://get.acme.sh | sh -s email=$domain_email
     judge "Install the SSL certificate generation script"
 }
 domain_check() {
@@ -477,6 +479,7 @@ port_exist_check() {
     fi
 }
 acme() {
+    "$HOME"/.acme.sh/acme.sh --set-default-ca --server zerossl
     if "$HOME"/.acme.sh/acme.sh --issue -d "${domain}" --standalone -k ec-256 --force --test; then
         echo -e "${OK} ${GreenBG} The SSL certificate test is issued successfully, and the official issuance begins ${Font}"
         rm -rf "$HOME/.acme.sh/${domain}_ecc"
